@@ -1,0 +1,81 @@
+{% if vault_config_storage.ty == 'file' %}
+storage "file" {
+  path = {{vault_config_storage.path | to_json}}
+}
+{% elif vault_config_storage.ty == 'consul' %}
+storage "consul" {
+  address = {{ vault_config_storage.address | default("127.0.0.1:8500") | to_json }}
+  check_timeout = {{ vault_config_storage.check_timeout | default("5s") | to_json }}
+  consistency_mode = {{ vault_config_storage.consistency_mode | default("default") | to_json }}
+  disable_registration = {{ vault_config_storage.disable_registration | default(False) | to_json }}
+  max_parallel = {{ vault_config_storage.max_parallel | default(128) | to_json }}
+  path = {{ vault_config_storage.path | default("vault/") | to_json }}
+  scheme = {{ vault_config_storage.scheme | default("http") | to_json }}
+  service = {{ vault_config_storage.service | default("vault") | to_json }}
+  service_tags = {{ vault_config_storage.service_tags | default("") | to_json }}
+  token = {{ vault_config_storage.token | default("") | to_json }}
+
+{% if vault_config_storage.pki is defined %}
+{% if vault_config_storage.pki.ca_file is defined %}
+  tls_ca_file = {{ vault_config_storage.pki.ca_file | to_json }}
+{% endif %}
+  tls_cert_file = {{ vault_config_storage.pki.cert_file | to_json }}
+  tls_key_file = {{ vault_config_storage.pki.key_file | to_json }}
+  tls_min_version = {{ vault_config_storage.pki.min_version | default("tls12") | to_json }}
+  tls_skip_verify = {{ vault_config_storage.pki.skip_verify | default(False) | to_json }}
+{% endif %}
+
+{% if vault_config_storage.ha is defined %}
+  cluster_addr = {{ vault_config_storage.ha.cluster_addr | default("") | to_json }}
+  disable_clustering = {{ vault_config_storage.ha.disable_clustering | default(False) | to_json }}
+  redirect_addr = {{ vault_config_storage.ha.redirect_addr | to_json }}
+{% endif %}
+}
+{% else %}
+storage "inmem" {}
+{% endif %}
+
+{% for l in vault_config_listeners|default([]) %}
+{% if l.ty == "tcp" %}
+listener "tcp" {
+  address = {{ l.address | default("127.0.0.1:8200") | to_json }}
+  cluster_address = {{ l.cluster_address | default("127.0.0.1:8201") | to_json }}
+{% if l.pki is defined %}
+  tls_cert_file = {{ l.pki.cert_file | to_json }}
+  tls_key_file = {{ l.pki.key_file | to_json }}
+  tls_min_version = {{ l.pki.min_version | default("tls12") | to_json }}
+{% if l.pki.cipher_suites is defined %}
+  tls_cipher_suites = {{ l.pki.cipher_suites | to_json }}
+{% endif %}
+  tls_prefer_server_cipher_suites = {{ l.pki.prefer_server_cipher_suites | default(False) | to_json }}
+  tls_require_and_verify_client_cert = {{ l.pki.require_and_verify_client_cert | default(False) | to_json }}
+{% else %}
+  tls_disable = "true"
+{% endif %}
+}
+{% endif %}
+{% endfor %}
+
+{% if vault_config_telemetry is defined %}
+telemetry {
+{% if t.ty == "statsite" %}
+  statsite_address = {{ t.address | to_json }}
+{% elif t.ty == "statsd" %}
+  statsd_address = {{ t.address | to_json }}
+{% elif t.ty == "circonus" %}
+  circonus_api_token = {{ t.api_token | to_json }}
+  circonus_api_app = {{ t.api_app | to_json }}
+  circonus_api_url = {{ t.api_url | default("https://api.circonus.com/v2") | to_json }}
+  circonus_submission_interval = {{ t.submission_interval | default("10s") | to_json }}
+  circonus_submission_api = {{ t.submission_api | to_json }}
+  circonus_check_id = {{ t.check_id | to_json }}
+  circonus_check_force_metric_activation = {{ t.check_force_metric_activation | default(False) | to_json}}
+  circonus_check_instance_id = {{ t.check_instance_id | to_json }}
+  circonus_check_search_tag = {{ t.check_search_tag | to_json }}
+  circonus_check_display_name = {{ t.check_display_name | default("") | to_json }}
+  circonus_check_tags = {{ t.check_tags | default("") | to_json }}
+  circonus_broker_id = {{ t.broker_id | to_json }}
+  circonus_broker_select_tag = {{ t.broker_select_tag | to_json }}
+{% endif %}
+}
+{% endif %}

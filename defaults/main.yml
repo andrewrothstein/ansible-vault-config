@@ -1,0 +1,36 @@
+---
+# defaults file for vault-config
+vault_config_dir: /etc/vault
+
+vault_config_storage:
+  ty: inmem
+
+# file based storage example:
+#vault_config_storage:
+#  ty: file
+#  path: /var/vault-data
+
+# consul based storage example:
+#vault_config_storage:
+#  ty: consul
+#  address: consul:8501
+#  scheme: https
+#  pki:
+#    cert_file: /etc/vault-pki/cert.pem
+#    key_file: /etc/vault-pki/key.pem
+#  token: 88bb5654-34ee-11e7-8104-a79a0b1f1e6d
+    
+vault_config_listeners:
+  - ty: tcp
+
+# TLS example...
+#vault_config_listeners:
+#  - ty: tcp
+#    pki:
+#      cert_file: /etc/vault-pki/cert.pem
+#      key_file: /etc/vault-pki/key.pem
+
+# statsite example...
+#vault_config_telemetry:
+#  - ty: statsite
+#    address: statsite.company.local:8125
