@@ -1,6 +1,6 @@
-[![CircleCI](https://circleci.com/gh/andrewrothstein/ansible-vault-config.svg?style=svg)](https://circleci.com/gh/andrewrothstein/ansible-vault-config)
 andrewrothstein.vault-config
 =========
+[![Build Status](https://travis-ci.org/andrewrothstein/ansible-vault-config.svg?branch=master)](https://travis-ci.org/andrewrothstein/ansible-vault-config)
 
 Writes a vault configuration to /etc/vault/config.hcl
 
