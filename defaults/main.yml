@@ -19,7 +19,33 @@ vault_config_storage:
 #    cert_file: /etc/vault-pki/cert.pem
 #    key_file: /etc/vault-pki/key.pem
 #  token: 88bb5654-34ee-11e7-8104-a79a0b1f1e6d
-    
+
+# s3 based storage example:
+#vault_config_storage:
+#  ty: s3
+#  bucket: foo
+#  access_key: 3c8646f0-7e44-11e7-b80d-77c8cef88836
+#  secret_key: 45366bc2-7e44-11e7-8a69-bb89f3be069a
+
+# couchdb storage example:
+#vault_config_storage:
+#  ty: couchdb
+#  endpoint: https://my-couchdb-dns.tld:5984/my-database
+#  username: admin
+#  password: s3)53T
+
+# etcd storage example:
+#vault_config_storage:
+#  ty: etcd
+#  address: http://localhost:2379
+#  api: v3
+
+# zookeeper storage example:
+#vault_config_storage:
+#  ty: zookeeper
+#  address: localhost:2181
+#  path: vault/
+
 vault_config_listeners:
   - ty: tcp
 

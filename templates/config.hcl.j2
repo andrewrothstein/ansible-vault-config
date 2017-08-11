@@ -2,6 +2,28 @@
 storage "file" {
   path = {{vault_config_storage.path | to_json}}
 }
+{% elif vault_config_storage.ty == 's3' %}
+storage "s3" {
+  access_key = {{vault_config_storage.access_key}}
+  secret_key = {{vault_config_storage.secret_key}}
+  bucket = {{vault_config_storage.bucket}}
+}
+{% elif vault_config_storage.ty == 'couchdb' %}
+storage "couchdb" {
+  endpoint = {{vault_config_storage.endpoint}}
+  username = {{vault_config_storage.username}}
+  password = {{vault_config_storage.password}}
+}
+{% elif vault_config_storage.ty == 'etcd' %}
+storage "etcd" {
+  address = {{vault_config_storage.address}}
+  etcd_api = {{vault_config_storage.api|default("v3")}}
+}
+{% elif vault_config_storage.ty == 'zookeeper' %}
+storage "zookeeper" {
+  address = {{vault_config_storage.address|default("localhost:2181")}}
+  path = {{vault_config_storage.path}}
+}
 {% elif vault_config_storage.ty == 'consul' %}
 storage "consul" {
   address = {{ vault_config_storage.address | default("127.0.0.1:8500") | to_json }}
@@ -40,11 +62,11 @@ storage "inmem" {}
 listener "tcp" {
   address = {{ l.address | default("127.0.0.1:8200") | to_json }}
   cluster_address = {{ l.cluster_address | default("127.0.0.1:8201") | to_json }}
-{% if l.pki is defined %}
+{% if l.pki defined %}
   tls_cert_file = {{ l.pki.cert_file | to_json }}
   tls_key_file = {{ l.pki.key_file | to_json }}
   tls_min_version = {{ l.pki.min_version | default("tls12") | to_json }}
-{% if l.pki.cipher_suites is defined %}
+{% if l.pki.cipher_suites defined %}
   tls_cipher_suites = {{ l.pki.cipher_suites | to_json }}
 {% endif %}
   tls_prefer_server_cipher_suites = {{ l.pki.prefer_server_cipher_suites | default(False) | to_json }}
