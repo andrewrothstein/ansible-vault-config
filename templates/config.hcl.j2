@@ -62,11 +62,11 @@ storage "inmem" {}
 listener "tcp" {
   address = {{ l.address | default("127.0.0.1:8200") | to_json }}
   cluster_address = {{ l.cluster_address | default("127.0.0.1:8201") | to_json }}
-{% if l.pki defined %}
+{% if l.pki is defined %}
   tls_cert_file = {{ l.pki.cert_file | to_json }}
   tls_key_file = {{ l.pki.key_file | to_json }}
   tls_min_version = {{ l.pki.min_version | default("tls12") | to_json }}
-{% if l.pki.cipher_suites defined %}
+{% if l.pki.cipher_suites is defined %}
   tls_cipher_suites = {{ l.pki.cipher_suites | to_json }}
 {% endif %}
   tls_prefer_server_cipher_suites = {{ l.pki.prefer_server_cipher_suites | default(False) | to_json }}
