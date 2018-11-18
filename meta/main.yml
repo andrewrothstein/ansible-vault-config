@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Andrew Rothstein
-  description: '@TODO name this role'
+  description: configures vault
   company: BlackRock
   license:
     - MIT
@@ -24,4 +24,4 @@ galaxy_info:
 
 dependencies:
   - src: andrewrothstein.vault
-    version: v1.2.8
+    version: v1.2.13
