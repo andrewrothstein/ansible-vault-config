@@ -4,25 +4,63 @@ storage "file" {
 }
 {% elif vault_config_storage.ty == 's3' %}
 storage "s3" {
-  access_key = {{vault_config_storage.access_key}}
-  secret_key = {{vault_config_storage.secret_key}}
-  bucket = {{vault_config_storage.bucket}}
+  access_key = {{ vault_config_storage.access_key | to_json }}
+  secret_key = {{ vault_config_storage.secret_key | to_json }}
+  bucket = {{ vault_config_storage.bucket | to_json }}
+  {% if 'endpoint' in vault_config_storage %}endpoint = {{ vault_config_storage.endpoint | to_json }}{% endif %}
+  {% if 'region' in vault_config_storage %}region = {{ vault_config_storage.region | to_json }}{% endif %}
+  {% if 'session_token' in vault_config_storage %}session_token = {{ vault_config_storage.session_token | to_json }}{% endif %}
+  {% if 'max_parallel' in vault_config_storage %}max_parallel = {{ vault_config_storage.max_parallel | to_json }}{% endif %}
+  {% if 's3_force_path_style' in vault_config_storage %}s3_force_path_style = {{ vault_config_storage.s3_force_path_style | to_json }}{% endif %}
+  {% if 'disable_ssl' in vault_config_storage %}disable_ssl = {{ vault_config_storage.disable_ssl | to_json }}{% endif %}
+  {% if 'kms_key_id' in vault_config_storage %}kms_key_id = {{ vault_config_storage.kms_key_id | to_json }}{% endif %}
+  {% if 'path' in vault_config_storage %}path = {{ vault_config_storage.path | to_json }}{% endif %}
 }
 {% elif vault_config_storage.ty == 'couchdb' %}
 storage "couchdb" {
   endpoint = {{vault_config_storage.endpoint}}
   username = {{vault_config_storage.username}}
   password = {{vault_config_storage.password}}
+  {% if 'max_parallel' in vault_config_storage %}max_parallel = {{ vault_config_storage.max_parallel | to_json }}{% endif %}
 }
 {% elif vault_config_storage.ty == 'etcd' %}
 storage "etcd" {
   address = {{vault_config_storage.address}}
-  etcd_api = {{vault_config_storage.api|default("v3")}}
+  {% if 'discovery_srv' in vault_config_storage %}discovery_srv = {{ vault_config_storage.discovery_srv | to_json }}{% endif %}
+  {% if 'discovery_srv_name' in vault_config_storage %}discovery_srv_name = {{ vault_config_storage.discovery_srv_name | to_json }}{% endif %}
+  etcd_api = {{vault_config_storage.api | default("v3")}}
+  {% if 'ha_enabled' in vault_config_storage %}ha_enabled = {{ vault_config_storage.ha_enabled | to_json }}{% endif %}
+  {% if 'path' in vault_config_storage %}path = {{ vault_config_storage.path | to_json }}{% endif %}
+  {% if 'sync' in vault_config_storage %}sync = {{ vault_config_storage.sync | to_json }}{% endif %}
+  {% if 'username' in vault_config_storage %}username = {{ vault_config_storage.username | to_json }}{% endif %}
+  {% if 'password' in vault_config_storage %}password = {{ vault_config_storage.password | to_json }}{% endif %}
+{% if vault_config_storage.pki is defined %}
+{% if vault_config_storage.pki.ca_file is defined %}
+  tls_ca_file = {{ vault_config_storage.pki.ca_file | to_json }}
+{% endif %}
+  tls_cert_file = {{ vault_config_storage.pki.cert_file | to_json }}
+  tls_key_file = {{ vault_config_storage.pki.key_file | to_json }}
+{% endif %}
+  {% if 'request_timeout' in vault_config_storage %}request_timeout = {{ vault_config_storage.request_timeout | to_json }}{% endif %}
+  {% if 'lock_timeout' in vault_config_storage %}lock_timeout = {{ vault_config_storage.lock_timeout | to_json }}{% endif %}
 }
 {% elif vault_config_storage.ty == 'zookeeper' %}
 storage "zookeeper" {
   address = {{vault_config_storage.address|default("localhost:2181")}}
   path = {{vault_config_storage.path}}
+  {% if 'auth_info' in vault_config_storage %}auth_info = {{ vault_config_storage.auth_info | to_json }}{% endif %}
+  {% if 'znode_owner' in vault_config_storage %}znode_owner = {{ vault_config_storage.znode_owner | to_json }}{% endif %}
+{% if vault_config_storage.pki is defined %}
+  tls_enabled = "true"
+{% if vault_config_storage.pki.ca_file is defined %}
+  tls_ca_file = {{ vault_config_storage.pki.ca_file | to_json }}
+{% endif %}
+  tls_cert_file = {{ vault_config_storage.pki.cert_file | to_json }}
+  tls_key_file = {{ vault_config_storage.pki.key_file | to_json }}
+  tls_min_version = {{ vault_config_storage.pki.min_version | default("tls12") | to_json }}
+  tls_skip_verify = {{ vault_config_storage.pki.skip_verify | default(False) | to_json }}
+{% endif %}
+  {% if 'tls_verify_ip' in vault_config_storage %}tls_verify_ip = {{ vault_config_storage.tls_verify_ip | to_json }}{% endif %}
 }
 {% elif vault_config_storage.ty == 'consul' %}
 storage "consul" {
@@ -54,47 +92,25 @@ storage "consul" {
 {% endif %}
 }
 {% elif vault_config_storage.ty == 'azure' %}
-  storage "azure" {
-  {% if 'accountName' in vault_config_storage %}
-    accountName = {{ vault_config_storage.accountName | to_json }}
-  {% endif %}
-  {% if 'accountKey' in vault_config_storage %}
-    accountKey = {{ vault_config_storage.accountKey | to_json }}
-  {% endif %}
-  {% if 'container' in vault_config_storage %}
-    container = {{ vault_config_storage.container | to_json }}
-  {% endif %}
-  {% if 'environment' in vault_config_storage %}
-    environment = {{ vault_config_storage.environment | to_json }}
-  {% endif %}
-  {% if 'arm_endpoint' in vault_config_storage %}
-    arm_endpoint = {{ vault_config_storage.arm_endpoint | to_json }}
-  {% endif %}
-  {% if 'max_parallel' in vault_config_storage %}
-    max_parallel = {{ vault_config_storage.max_parallel | to_json }}
-  {% endif %}
-  }
+storage "azure" {
+  {% if 'accountName' in vault_config_storage %}accountName = {{ vault_config_storage.accountName | to_json }}{% endif %}
+  {% if 'accountKey' in vault_config_storage %}accountKey = {{ vault_config_storage.accountKey | to_json }}{% endif %}
+  {% if 'container' in vault_config_storage %}container = {{ vault_config_storage.container | to_json }}{% endif %}
+  {% if 'environment' in vault_config_storage %}environment = {{ vault_config_storage.environment | to_json }}{% endif %}
+  {% if 'arm_endpoint' in vault_config_storage %}arm_endpoint = {{ vault_config_storage.arm_endpoint | to_json }}{% endif %}
+  {% if 'max_parallel' in vault_config_storage %}max_parallel = {{ vault_config_storage.max_parallel | to_json }}{% endif %}
+}
 {% elif vault_config_storage.ty == 'raft' %}
-  storage "raft" {
-  {% if 'path' in vault_config_storage %}
-    path = {{ vault_config_storage.path | to_json }}
-  {% endif %}
-  {% if 'node_id' in vault_config_storage %}
-    node_id = {{ vault_config_storage.node_id | to_json }}
-  {% endif %}
-  }
+storage "raft" {
+  {% if 'path' in vault_config_storage %}path = {{ vault_config_storage.path | to_json }}{% endif %}
+  {% if 'node_id' in vault_config_storage %}node_id = {{ vault_config_storage.node_id | to_json }}{% endif %}
+}
 {% elif vault_config_storage.ty == 'cassandra' %}
-  storage "cassandra" {
-  {% if 'hosts' in vault_config_storage %}
-    hosts = {{ vault_config_storage.hosts | to_json }}
-  {% endif %}
-  {% if 'consistency' in vault_config_storage %}
-    consistency = {{ vault_config_storage.consistency | to_json }}
-  {% endif %}
-  {% if 'protocol_version' in vault_config_storage %}
-    protocol_version = {{ vault_config_storage.protocol_version | to_json }}
-  {% endif %}
-  }
+storage "cassandra" {
+  {% if 'hosts' in vault_config_storage %}hosts = {{ vault_config_storage.hosts | to_json }}{% endif %}
+  {% if 'consistency' in vault_config_storage %}consistency = {{ vault_config_storage.consistency | to_json }}{% endif %}
+  {% if 'protocol_version' in vault_config_storage %}protocol_version = {{ vault_config_storage.protocol_version | to_json }}{% endif %}
+}
 {% else %}
 storage "inmem" {}
 {% endif %}
