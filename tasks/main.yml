@@ -10,13 +10,50 @@
       paths:
         - '{{ role_path }}/vars'
 
-- name: make config dir...
+- name: create vault group
   become: yes
   become_user: root
+  group:
+    name: '{{ vault_group }}'
+    state: present
+
+- name: create vault user
+  become: yes
+  become_user: root
+  user:
+    name: '{{ vault_user }}'
+    group: '{{ vault_group }}'
+    home: '{{ vault_data_dir }}'
+    state: present
+
+- name: create directories
+  become: yes
+  become_user: root
+  with_items:
+    - d: '{{ vault_config_dir }}'
+      m: '0700'
+    - d: '{{ vault_config_pki_dir }}'
+      m: '0700'
   file:
-    path: '{{ vault_config_dir }}'
+    path: '{{ item.d }}'
     state: directory
-    mode: 0755
+    owner: '{{ vault_user }}'
+    group: '{{ vault_group }}'
+    mode: '{{ item.m }}'
+
+- name: install keys/certs
+  when: vault_config_sshkey | default(False)
+  include_role:
+    name: andrewrothstein.sshkey
+  vars:
+    sshkey_become: True
+    sshkey_pki_dir: '{{ vault_config_src_pki_dir }}'
+    sshkey_target_perms:
+      owner: '{{ vault_user }}'
+      group: '{{ vault_group }}'
+    sshkey_target_dir: '{{ vault_config_pki_dir }}'
+    sshkey_override_target_cert: cert.pem
+    sshkey_override_target_key: key.pem
 
 - name: install vault config...
   become: yes
@@ -28,4 +65,6 @@
   template:
     src: '{{ item.f }}.j2'
     dest: '{{ item.d }}/{{ item.f }}'
+    owner: '{{ vault_user }}'
+    group: '{{ vault_group }}'
     mode: '{{ item.m }}'
