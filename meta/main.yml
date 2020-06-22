@@ -24,4 +24,4 @@ galaxy_info:
 
 dependencies:
   - role: andrewrothstein.vault
-    version: v1.2.28
+    version: v1.2.34
