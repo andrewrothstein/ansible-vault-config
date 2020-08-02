@@ -1,2 +1,3 @@
 ---
 # vars file for vault-config
+vault_config_pki_dir: '{{ vault_config_dir }}/pki'

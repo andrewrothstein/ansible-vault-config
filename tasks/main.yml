@@ -23,7 +23,6 @@
   user:
     name: '{{ vault_user }}'
     group: '{{ vault_group }}'
-    home: '{{ vault_data_dir }}'
     state: present
 
 - name: create directories
@@ -42,18 +41,15 @@
     mode: '{{ item.m }}'
 
 - name: install keys/certs
-  when: vault_config_sshkey | default(False)
+  when: vault_config_tls | default(False)
   include_role:
-    name: andrewrothstein.sshkey
+    name: andrewrothstein.tls
   vars:
-    sshkey_become: True
-    sshkey_pki_dir: '{{ vault_config_src_pki_dir }}'
-    sshkey_target_perms:
+    tls_src: '{{ vault_config_tls_src }}'
+    tls_dest: '{{ vault_config_pki_dir }}'
+    tls_dest_chown:
       owner: '{{ vault_user }}'
-      group: '{{ vault_group }}'
-    sshkey_target_dir: '{{ vault_config_pki_dir }}'
-    sshkey_override_target_cert: cert.pem
-    sshkey_override_target_key: key.pem
+      grp: '{{ vault_group }}'
 
 - name: install vault config...
   become: yes

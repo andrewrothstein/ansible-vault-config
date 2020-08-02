@@ -23,5 +23,7 @@ galaxy_info:
     - development
 
 dependencies:
+  - role: andrewrothstein.tls
+    version: v0.0.1
   - role: andrewrothstein.vault
-    version: v1.2.34
+    version: v2.0.1

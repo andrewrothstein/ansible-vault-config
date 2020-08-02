@@ -4,11 +4,11 @@ vault_group: vault
 
 # defaults file for vault-config
 vault_config_dir: /etc/vault
-vault_config_pki_dir: '{{ vault_config_dir }}/pki'
 
 # instal TLS keys on target
-vault_config_sshkey: True
-vault_config_src_pki_dir: ~/secrets
+vault_config_tls: False
+#vault_config_tls: True
+#vault_config_tls_src: ~/secrets
 
 vault_config_storage:
   ty: inmem

@@ -1,6 +1,6 @@
 {% if vault_config_storage.ty == 'file' %}
 storage "file" {
-  path = {{vault_config_storage.path | to_json}}
+  path = {{ vault_config_storage.path | to_json }}
 }
 {% elif vault_config_storage.ty == 's3' %}
 storage "s3" {
@@ -18,41 +18,37 @@ storage "s3" {
 }
 {% elif vault_config_storage.ty == 'couchdb' %}
 storage "couchdb" {
-  endpoint = {{vault_config_storage.endpoint}}
-  username = {{vault_config_storage.username}}
-  password = {{vault_config_storage.password}}
+  endpoint = {{ vault_config_storage.endpoint }}
+  username = {{ vault_config_storage.username }}
+  password = {{ vault_config_storage.password }}
   {% if 'max_parallel' in vault_config_storage %}max_parallel = {{ vault_config_storage.max_parallel | to_json }}{% endif %}
 }
 {% elif vault_config_storage.ty == 'etcd' %}
 storage "etcd" {
-  address = {{vault_config_storage.address}}
+  address = {{ vault_config_storage.address }}
   {% if 'discovery_srv' in vault_config_storage %}discovery_srv = {{ vault_config_storage.discovery_srv | to_json }}{% endif %}
   {% if 'discovery_srv_name' in vault_config_storage %}discovery_srv_name = {{ vault_config_storage.discovery_srv_name | to_json }}{% endif %}
-  etcd_api = {{vault_config_storage.api | default("v3")}}
+  etcd_api = {{ vault_config_storage.api | default("v3") }}
   {% if 'ha_enabled' in vault_config_storage %}ha_enabled = {{ vault_config_storage.ha_enabled | to_json }}{% endif %}
   {% if 'path' in vault_config_storage %}path = {{ vault_config_storage.path | to_json }}{% endif %}
   {% if 'sync' in vault_config_storage %}sync = {{ vault_config_storage.sync | to_json }}{% endif %}
   {% if 'username' in vault_config_storage %}username = {{ vault_config_storage.username | to_json }}{% endif %}
   {% if 'password' in vault_config_storage %}password = {{ vault_config_storage.password | to_json }}{% endif %}
-{% if vault_config_storage.pki is defined %}
-{% if vault_config_storage.pki.ca_file is defined %}
+{% if 'pki' in vault_config_storage and 'ca_file' in vault_config_storage.pki %}
   tls_ca_file = {{ vault_config_storage.pki.ca_file | to_json }}
-{% endif %}
-  tls_cert_file = {{ vault_config_storage.pki.cert_file | to_json }}
-  tls_key_file = {{ vault_config_storage.pki.key_file | to_json }}
 {% endif %}
   {% if 'request_timeout' in vault_config_storage %}request_timeout = {{ vault_config_storage.request_timeout | to_json }}{% endif %}
   {% if 'lock_timeout' in vault_config_storage %}lock_timeout = {{ vault_config_storage.lock_timeout | to_json }}{% endif %}
 }
 {% elif vault_config_storage.ty == 'zookeeper' %}
 storage "zookeeper" {
-  address = {{vault_config_storage.address|default("localhost:2181")}}
-  path = {{vault_config_storage.path}}
+  address = {{ vault_config_storage.address | default("localhost:2181") }}
+  path = {{ vault_config_storage.path }}
   {% if 'auth_info' in vault_config_storage %}auth_info = {{ vault_config_storage.auth_info | to_json }}{% endif %}
   {% if 'znode_owner' in vault_config_storage %}znode_owner = {{ vault_config_storage.znode_owner | to_json }}{% endif %}
-{% if vault_config_storage.pki is defined %}
+{% if 'pki' in vault_config_storage %}
   tls_enabled = "true"
-{% if vault_config_storage.pki.ca_file is defined %}
+{% if 'ca_file' in vault_config_storage.pki %}
   tls_ca_file = {{ vault_config_storage.pki.ca_file | to_json }}
 {% endif %}
   tls_cert_file = {{ vault_config_storage.pki.cert_file | to_json }}
@@ -74,9 +70,8 @@ storage "consul" {
   service = {{ vault_config_storage.service | default("vault") | to_json }}
   service_tags = {{ vault_config_storage.service_tags | default("") | to_json }}
   token = {{ vault_config_storage.token | default("") | to_json }}
-
-{% if vault_config_storage.pki is defined %}
-{% if vault_config_storage.pki.ca_file is defined %}
+{% if 'pki' in vault_config_storage %}
+{% if 'ca_file' in vault_config_storage.pki %}
   tls_ca_file = {{ vault_config_storage.pki.ca_file | to_json }}
 {% endif %}
   tls_cert_file = {{ vault_config_storage.pki.cert_file | to_json }}
@@ -85,7 +80,7 @@ storage "consul" {
   tls_skip_verify = {{ vault_config_storage.pki.skip_verify | default(False) | to_json }}
 {% endif %}
 
-{% if vault_config_storage.ha is defined %}
+{% if 'ha' in vault_config_storage %}
   cluster_addr = {{ vault_config_storage.ha.cluster_addr | default("") | to_json }}
   disable_clustering = {{ vault_config_storage.ha.disable_clustering | default(False) | to_json }}
   redirect_addr = {{ vault_config_storage.ha.redirect_addr | to_json }}
@@ -138,7 +133,7 @@ listener "tcp" {
   {% if 'require_and_verify_client_cert' in l.pki %}tls_require_and_verify_client_cert = {{ l.pki.require_and_verify_client_cert | to_json }}{% endif %}
   {% if 'client_ca_file' in l.pki %}tls_client_ca_file = {{ l.pki.client_ca_file }}{% endif %}
   {% if 'disable_client_certs' in l.pki %}tls_disable_client_certs = {{ l.pki.disable_client_certs | to_json }}{% endif %}
-{% elif 'vault_config_sshkey' is defined and vault_config_sshkey %}
+{% elif vault_config_tls %}
   cert_file = "{{ vault_config_pki_dir }}/cert.pem"
   key_file = "{{ vault_config_pki_dir }}/key.pem"
 {% else %}
@@ -153,7 +148,7 @@ listener "tcp" {
 }
 {% endif %}
 {% endfor %}
-  
+
 {% if vault_config_seal is defined %}
 seal {{ vault_config_seal.ty | to_json }} {
 {% if vault_config_seal.ty == 'azurekeyvault' %-}
