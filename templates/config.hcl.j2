@@ -124,14 +124,14 @@ listener "tcp" {
   {% if 'max_request_duration' in l %}max_request_duration = {{ l.max_request_duration | to_json }}{% endif %}
   {% if 'proxy_protocol_behavior' in l %}proxy_protocol_behavior = {{ l.proxy_protocol_behavior | to_json }}{% endif %}
   {% if 'proxy_protocol_authorized_addrs' in l %}proxy_protocol_authorized_addrs = {{ l.proxy_protocol_authorized_addrs | to_json }}{% endif %}
-{% if 'pki' in l %-}
+{% if 'pki' in l %}
   {% if 'cert_file' in l.pki %}tls_cert_file = {{ l.pki.cert_file | to_json }}{% endif %}
   {% if 'key_file' in l.pki %}tls_key_file = {{ l.pki.key_file | to_json }}{% endif %}
   {% if 'min_version' in l.pki %}tls_min_version = {{ l.pki.min_version | to_json }}{% endif %}
   {% if 'cipher_suites' in l.pki %}tls_cipher_suites = {{ l.pki.cipher_suites | to_json }}{% endif %}
   {% if 'prefer_server_cipher_suites' in l.pki %}tls_prefer_server_cipher_suites = {{ l.pki.prefer_server_cipher_suites | to_json }}{% endif %}
   {% if 'require_and_verify_client_cert' in l.pki %}tls_require_and_verify_client_cert = {{ l.pki.require_and_verify_client_cert | to_json }}{% endif %}
-  {% if 'client_ca_file' in l.pki %}tls_client_ca_file = {{ l.pki.client_ca_file }}{% endif %}
+  {% if 'client_ca_file' in l.pki %}tls_client_ca_file = {{ l.pki.client_ca_file | to_json }}{% endif %}
   {% if 'disable_client_certs' in l.pki %}tls_disable_client_certs = {{ l.pki.disable_client_certs | to_json }}{% endif %}
 {% elif vault_config_tls %}
   cert_file = "{{ vault_config_pki_dir }}/cert.pem"
@@ -139,7 +139,7 @@ listener "tcp" {
 {% else %}
   tls_disable = "true"
 {% endif %}
-{% if 'x_forwarded' in l %-}
+{% if 'x_forwarded' in l %}
   {% if 'for_authorized_addrs' in l.x_forwarded %}x_forwarded_for_authorized_addrs = {{ l.x_forwarded.for_authorized_addrs | to_json }}{% endif %}
   {% if 'for_hop_skips' in l.x_forwarded %}x_forwarded_for_hop_skips = {{ l.x_forwarded.for_hop_skips | to_json }}{% endif %}
   {% if 'for_reject_not_authorized' in l.x_forwarded %}x_forwarded_for_reject_not_authorized = {{ l.x_forwarded.for_reject_not_authorized | to_json }}{% endif %}
@@ -151,7 +151,7 @@ listener "tcp" {
 
 {% if vault_config_seal is defined %}
 seal {{ vault_config_seal.ty | to_json }} {
-{% if vault_config_seal.ty == 'azurekeyvault' %-}
+{% if vault_config_seal.ty == 'azurekeyvault' %}
   {% if 'tenant_id' in vault_config_seal %}tenant_id = {{ vault_config_seal.tenant_id | to_json }}{% endif %}
   {% if 'client_id' in vault_config_seal %}client_id = {{ vault_config_seal.client_id | to_json }}{% endif %}
   {% if 'client_secret' in vault_config_seal %}client_secret = {{ vault_config_seal.client_secret | to_json }}{% endif %}
