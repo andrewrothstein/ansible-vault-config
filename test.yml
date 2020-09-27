@@ -2,5 +2,6 @@
 - hosts: all
   roles:
     - role: '{{ playbook_dir }}'
-      vault_config_tls: True
-      vault_config_tls_src: test-pki
+      vault_config_tls:
+        enable: True
+        pki_dir: test-pki

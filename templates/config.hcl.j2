@@ -7,56 +7,98 @@ storage "s3" {
   access_key = {{ vault_config_storage.access_key | to_json }}
   secret_key = {{ vault_config_storage.secret_key | to_json }}
   bucket = {{ vault_config_storage.bucket | to_json }}
-  {% if 'endpoint' in vault_config_storage %}endpoint = {{ vault_config_storage.endpoint | to_json }}{% endif %}
-  {% if 'region' in vault_config_storage %}region = {{ vault_config_storage.region | to_json }}{% endif %}
-  {% if 'session_token' in vault_config_storage %}session_token = {{ vault_config_storage.session_token | to_json }}{% endif %}
-  {% if 'max_parallel' in vault_config_storage %}max_parallel = {{ vault_config_storage.max_parallel | to_json }}{% endif %}
-  {% if 's3_force_path_style' in vault_config_storage %}s3_force_path_style = {{ vault_config_storage.s3_force_path_style | to_json }}{% endif %}
-  {% if 'disable_ssl' in vault_config_storage %}disable_ssl = {{ vault_config_storage.disable_ssl | to_json }}{% endif %}
-  {% if 'kms_key_id' in vault_config_storage %}kms_key_id = {{ vault_config_storage.kms_key_id | to_json }}{% endif %}
-  {% if 'path' in vault_config_storage %}path = {{ vault_config_storage.path | to_json }}{% endif %}
+  {% if 'endpoint' in vault_config_storage %}
+    endpoint = {{ vault_config_storage.endpoint | to_json }}
+  {% endif %}
+  {% if 'region' in vault_config_storage %}
+    region = {{ vault_config_storage.region | to_json }}
+  {% endif %}
+  {% if 'session_token' in vault_config_storage %}
+    session_token = {{ vault_config_storage.session_token | to_json }}
+  {% endif %}
+  {% if 'max_parallel' in vault_config_storage %}
+    max_parallel = {{ vault_config_storage.max_parallel | to_json }}
+  {% endif %}
+  {% if 's3_force_path_style' in vault_config_storage %}
+    s3_force_path_style = {{ vault_config_storage.s3_force_path_style | to_json }}
+  {% endif %}
+  {% if 'disable_ssl' in vault_config_storage %}
+    disable_ssl = {{ vault_config_storage.disable_ssl | to_json }}
+  {% endif %}
+  {% if 'kms_key_id' in vault_config_storage %}
+    kms_key_id = {{ vault_config_storage.kms_key_id | to_json }}
+  {% endif %}
+  {% if 'path' in vault_config_storage %}
+    path = {{ vault_config_storage.path | to_json }}
+  {% endif %}
 }
 {% elif vault_config_storage.ty == 'couchdb' %}
 storage "couchdb" {
   endpoint = {{ vault_config_storage.endpoint }}
   username = {{ vault_config_storage.username }}
   password = {{ vault_config_storage.password }}
-  {% if 'max_parallel' in vault_config_storage %}max_parallel = {{ vault_config_storage.max_parallel | to_json }}{% endif %}
+  {% if 'max_parallel' in vault_config_storage %}
+    max_parallel = {{ vault_config_storage.max_parallel | to_json }}
+  {% endif %}
 }
 {% elif vault_config_storage.ty == 'etcd' %}
 storage "etcd" {
   address = {{ vault_config_storage.address }}
-  {% if 'discovery_srv' in vault_config_storage %}discovery_srv = {{ vault_config_storage.discovery_srv | to_json }}{% endif %}
-  {% if 'discovery_srv_name' in vault_config_storage %}discovery_srv_name = {{ vault_config_storage.discovery_srv_name | to_json }}{% endif %}
+  {% if 'discovery_srv' in vault_config_storage %}
+    discovery_srv = {{ vault_config_storage.discovery_srv | to_json }}
+  {% endif %}
+  {% if 'discovery_srv_name' in vault_config_storage %}
+    discovery_srv_name = {{ vault_config_storage.discovery_srv_name | to_json }}
+  {% endif %}
   etcd_api = {{ vault_config_storage.api | default("v3") }}
-  {% if 'ha_enabled' in vault_config_storage %}ha_enabled = {{ vault_config_storage.ha_enabled | to_json }}{% endif %}
-  {% if 'path' in vault_config_storage %}path = {{ vault_config_storage.path | to_json }}{% endif %}
-  {% if 'sync' in vault_config_storage %}sync = {{ vault_config_storage.sync | to_json }}{% endif %}
-  {% if 'username' in vault_config_storage %}username = {{ vault_config_storage.username | to_json }}{% endif %}
-  {% if 'password' in vault_config_storage %}password = {{ vault_config_storage.password | to_json }}{% endif %}
-{% if 'pki' in vault_config_storage and 'ca_file' in vault_config_storage.pki %}
-  tls_ca_file = {{ vault_config_storage.pki.ca_file | to_json }}
-{% endif %}
-  {% if 'request_timeout' in vault_config_storage %}request_timeout = {{ vault_config_storage.request_timeout | to_json }}{% endif %}
-  {% if 'lock_timeout' in vault_config_storage %}lock_timeout = {{ vault_config_storage.lock_timeout | to_json }}{% endif %}
+  {% if 'ha_enabled' in vault_config_storage %}
+    ha_enabled = {{ vault_config_storage.ha_enabled | to_json }}
+  {% endif %}
+  {% if 'path' in vault_config_storage %}
+    path = {{ vault_config_storage.path | to_json }}
+  {% endif %}
+  {% if 'sync' in vault_config_storage %}
+    sync = {{ vault_config_storage.sync | to_json }}
+  {% endif %}
+  {% if 'username' in vault_config_storage %}
+    username = {{ vault_config_storage.username | to_json }}
+  {% endif %}
+  {% if 'password' in vault_config_storage %}
+    password = {{ vault_config_storage.password | to_json }}
+  {% endif %}
+  {% if 'pki' in vault_config_storage and 'ca_file' in vault_config_storage.pki %}
+    tls_ca_file = {{ vault_config_storage.pki.ca_file | to_json }}
+  {% endif %}
+  {% if 'request_timeout' in vault_config_storage %}
+    request_timeout = {{ vault_config_storage.request_timeout | to_json }}
+  {% endif %}
+  {% if 'lock_timeout' in vault_config_storage %}
+    lock_timeout = {{ vault_config_storage.lock_timeout | to_json }}
+  {% endif %}
 }
 {% elif vault_config_storage.ty == 'zookeeper' %}
 storage "zookeeper" {
   address = {{ vault_config_storage.address | default("localhost:2181") }}
   path = {{ vault_config_storage.path }}
-  {% if 'auth_info' in vault_config_storage %}auth_info = {{ vault_config_storage.auth_info | to_json }}{% endif %}
-  {% if 'znode_owner' in vault_config_storage %}znode_owner = {{ vault_config_storage.znode_owner | to_json }}{% endif %}
-{% if 'pki' in vault_config_storage %}
-  tls_enabled = "true"
-{% if 'ca_file' in vault_config_storage.pki %}
-  tls_ca_file = {{ vault_config_storage.pki.ca_file | to_json }}
-{% endif %}
-  tls_cert_file = {{ vault_config_storage.pki.cert_file | to_json }}
-  tls_key_file = {{ vault_config_storage.pki.key_file | to_json }}
-  tls_min_version = {{ vault_config_storage.pki.min_version | default("tls12") | to_json }}
-  tls_skip_verify = {{ vault_config_storage.pki.skip_verify | default(False) | to_json }}
-{% endif %}
-  {% if 'tls_verify_ip' in vault_config_storage %}tls_verify_ip = {{ vault_config_storage.tls_verify_ip | to_json }}{% endif %}
+  {% if 'auth_info' in vault_config_storage %}
+    auth_info = {{ vault_config_storage.auth_info | to_json }}
+  {% endif %}
+  {% if 'znode_owner' in vault_config_storage %}
+    znode_owner = {{ vault_config_storage.znode_owner | to_json }}
+  {% endif %}
+  {% if 'pki' in vault_config_storage %}
+    tls_enabled = "true"
+    {% if 'ca_file' in vault_config_storage.pki %}
+      tls_ca_file = {{ vault_config_storage.pki.ca_file | to_json }}
+    {% endif %}
+    tls_cert_file = {{ vault_config_storage.pki.cert_file | to_json }}
+    tls_key_file = {{ vault_config_storage.pki.key_file | to_json }}
+    tls_min_version = {{ vault_config_storage.pki.min_version | default("tls12") | to_json }}
+    tls_skip_verify = {{ vault_config_storage.pki.skip_verify | default(False) | to_json }}
+  {% endif %}
+  {% if 'tls_verify_ip' in vault_config_storage %}
+    tls_verify_ip = {{ vault_config_storage.tls_verify_ip | to_json }}
+  {% endif %}
 }
 {% elif vault_config_storage.ty == 'consul' %}
 storage "consul" {
@@ -71,9 +113,9 @@ storage "consul" {
   service_tags = {{ vault_config_storage.service_tags | default("") | to_json }}
   token = {{ vault_config_storage.token | default("") | to_json }}
 {% if 'pki' in vault_config_storage %}
-{% if 'ca_file' in vault_config_storage.pki %}
-  tls_ca_file = {{ vault_config_storage.pki.ca_file | to_json }}
-{% endif %}
+  {% if 'ca_file' in vault_config_storage.pki %}
+    tls_ca_file = {{ vault_config_storage.pki.ca_file | to_json }}
+  {% endif %}
   tls_cert_file = {{ vault_config_storage.pki.cert_file | to_json }}
   tls_key_file = {{ vault_config_storage.pki.key_file | to_json }}
   tls_min_version = {{ vault_config_storage.pki.min_version | default("tls12") | to_json }}
@@ -88,17 +130,33 @@ storage "consul" {
 }
 {% elif vault_config_storage.ty == 'azure' %}
 storage "azure" {
-  {% if 'accountName' in vault_config_storage %}accountName = {{ vault_config_storage.accountName | to_json }}{% endif %}
-  {% if 'accountKey' in vault_config_storage %}accountKey = {{ vault_config_storage.accountKey | to_json }}{% endif %}
-  {% if 'container' in vault_config_storage %}container = {{ vault_config_storage.container | to_json }}{% endif %}
-  {% if 'environment' in vault_config_storage %}environment = {{ vault_config_storage.environment | to_json }}{% endif %}
-  {% if 'arm_endpoint' in vault_config_storage %}arm_endpoint = {{ vault_config_storage.arm_endpoint | to_json }}{% endif %}
-  {% if 'max_parallel' in vault_config_storage %}max_parallel = {{ vault_config_storage.max_parallel | to_json }}{% endif %}
+  {% if 'accountName' in vault_config_storage %}
+    accountName = {{ vault_config_storage.accountName | to_json }}
+  {% endif %}
+  {% if 'accountKey' in vault_config_storage %}
+    accountKey = {{ vault_config_storage.accountKey | to_json }}
+  {% endif %}
+  {% if 'container' in vault_config_storage %}
+    container = {{ vault_config_storage.container | to_json }}
+  {% endif %}
+  {% if 'environment' in vault_config_storage %}
+    environment = {{ vault_config_storage.environment | to_json }}
+  {% endif %}
+  {% if 'arm_endpoint' in vault_config_storage %}
+    arm_endpoint = {{ vault_config_storage.arm_endpoint | to_json }}
+  {% endif %}
+  {% if 'max_parallel' in vault_config_storage %}
+    max_parallel = {{ vault_config_storage.max_parallel | to_json }}
+  {% endif %}
 }
 {% elif vault_config_storage.ty == 'raft' %}
 storage "raft" {
-  {% if 'path' in vault_config_storage %}path = {{ vault_config_storage.path | to_json }}{% endif %}
-  {% if 'node_id' in vault_config_storage %}node_id = {{ vault_config_storage.node_id | to_json }}{% endif %}
+  {% if 'path' in vault_config_storage %}
+    path = {{ vault_config_storage.path | to_json }}
+  {% endif %}
+  {% if 'node_id' in vault_config_storage %}
+    node_id = {{ vault_config_storage.node_id | to_json }}
+  {% endif %}
 }
 {% elif vault_config_storage.ty == 'cassandra' %}
 storage "cassandra" {
@@ -116,35 +174,75 @@ listener "tcp" {
   address = {{ l.address | default("127.0.0.1:8200") | to_json }}
   cluster_address = {{ l.cluster_address | default("127.0.0.1:8201") | to_json }}
     
-  {% if 'http_idle_timeout' in l %}http_idle_timeout = {{ l.http_idle_timeout | to_json }}{% endif %}
-  {% if 'http_read_header_timeout' in l %}http_read_header_timeout = {{ l.http_read_header_timeout | to_json }}{% endif %}
-  {% if 'http_read_timeout' in l %}http_read_timeout = {{ l.http_read_timeout | to_json }}{% endif %}
-  {% if 'http_write_timeout' in l %}http_write_timeout = {{ l.http_write_timeout | to_json }}{% endif %}
-  {% if 'max_request_size' in l %}max_request_size = {{ l.max_request_size | to_json }}{% endif %}
-  {% if 'max_request_duration' in l %}max_request_duration = {{ l.max_request_duration | to_json }}{% endif %}
-  {% if 'proxy_protocol_behavior' in l %}proxy_protocol_behavior = {{ l.proxy_protocol_behavior | to_json }}{% endif %}
-  {% if 'proxy_protocol_authorized_addrs' in l %}proxy_protocol_authorized_addrs = {{ l.proxy_protocol_authorized_addrs | to_json }}{% endif %}
-{% if 'pki' in l %}
-  {% if 'cert_file' in l.pki %}tls_cert_file = {{ l.pki.cert_file | to_json }}{% endif %}
-  {% if 'key_file' in l.pki %}tls_key_file = {{ l.pki.key_file | to_json }}{% endif %}
-  {% if 'min_version' in l.pki %}tls_min_version = {{ l.pki.min_version | to_json }}{% endif %}
-  {% if 'cipher_suites' in l.pki %}tls_cipher_suites = {{ l.pki.cipher_suites | to_json }}{% endif %}
-  {% if 'prefer_server_cipher_suites' in l.pki %}tls_prefer_server_cipher_suites = {{ l.pki.prefer_server_cipher_suites | to_json }}{% endif %}
-  {% if 'require_and_verify_client_cert' in l.pki %}tls_require_and_verify_client_cert = {{ l.pki.require_and_verify_client_cert | to_json }}{% endif %}
-  {% if 'client_ca_file' in l.pki %}tls_client_ca_file = {{ l.pki.client_ca_file | to_json }}{% endif %}
-  {% if 'disable_client_certs' in l.pki %}tls_disable_client_certs = {{ l.pki.disable_client_certs | to_json }}{% endif %}
-{% elif vault_config_tls %}
-  cert_file = "{{ vault_config_pki_dir }}/cert.pem"
-  key_file = "{{ vault_config_pki_dir }}/key.pem"
-{% else %}
-  tls_disable = "true"
-{% endif %}
-{% if 'x_forwarded' in l %}
-  {% if 'for_authorized_addrs' in l.x_forwarded %}x_forwarded_for_authorized_addrs = {{ l.x_forwarded.for_authorized_addrs | to_json }}{% endif %}
-  {% if 'for_hop_skips' in l.x_forwarded %}x_forwarded_for_hop_skips = {{ l.x_forwarded.for_hop_skips | to_json }}{% endif %}
-  {% if 'for_reject_not_authorized' in l.x_forwarded %}x_forwarded_for_reject_not_authorized = {{ l.x_forwarded.for_reject_not_authorized | to_json }}{% endif %}
-  {% if 'for_reject_not_present' in l.x_forwarded %}x_forwarded_for_reject_not_present = {{ l.x_forwarded.for_reject_not_present | to_json }}{% endif %}
-{% endif %}
+    {% if 'http_idle_timeout' in l %}
+      http_idle_timeout = {{ l.http_idle_timeout | to_json }}
+    {% endif %}
+    {% if 'http_read_header_timeout' in l %}
+      http_read_header_timeout = {{ l.http_read_header_timeout | to_json }}
+    {% endif %}
+    {% if 'http_read_timeout' in l %}
+      http_read_timeout = {{ l.http_read_timeout | to_json }}
+    {% endif %}
+    {% if 'http_write_timeout' in l %}
+      http_write_timeout = {{ l.http_write_timeout | to_json }}
+    {% endif %}
+    {% if 'max_request_size' in l %}
+      max_request_size = {{ l.max_request_size | to_json }}
+    {% endif %}
+    {% if 'max_request_duration' in l %}
+      max_request_duration = {{ l.max_request_duration | to_json }}
+    {% endif %}
+    {% if 'proxy_protocol_behavior' in l %}
+      proxy_protocol_behavior = {{ l.proxy_protocol_behavior | to_json }}
+    {% endif %}
+    {% if 'proxy_protocol_authorized_addrs' in l %}
+      proxy_protocol_authorized_addrs = {{ l.proxy_protocol_authorized_addrs | to_json }}
+    {% endif %}
+    {% if 'pki' in l %}
+      {% if 'cert_file' in l.pki %}
+        tls_cert_file = {{ l.pki.cert_file | to_json }}
+      {% endif %}
+      {% if 'key_file' in l.pki %}
+        tls_key_file = {{ l.pki.key_file | to_json }}
+      {% endif %}
+      {% if 'min_version' in l.pki %}
+        tls_min_version = {{ l.pki.min_version | to_json }}
+      {% endif %}
+      {% if 'cipher_suites' in l.pki %}
+        tls_cipher_suites = {{ l.pki.cipher_suites | to_json }}
+      {% endif %}
+      {% if 'prefer_server_cipher_suites' in l.pki %}
+        tls_prefer_server_cipher_suites = {{ l.pki.prefer_server_cipher_suites | to_json }}
+      {% endif %}
+      {% if 'require_and_verify_client_cert' in l.pki %}
+        tls_require_and_verify_client_cert = {{ l.pki.require_and_verify_client_cert | to_json }}
+      {% endif %}
+      {% if 'client_ca_file' in l.pki %}
+        tls_client_ca_file = {{ l.pki.client_ca_file | to_json }}
+      {% endif %}
+      {% if 'disable_client_certs' in l.pki %}
+        tls_disable_client_certs = {{ l.pki.disable_client_certs | to_json }}
+      {% endif %}
+    {% elif vault_config_tls is defined %}
+      cert_file = "{{ vault_config_pki_dir }}/cert.pem"
+      key_file = "{{ vault_config_pki_dir }}/key.pem"
+    {% else %}
+      tls_disable = "true"
+    {% endif %}
+    {% if 'x_forwarded' in l %}
+      {% if 'for_authorized_addrs' in l.x_forwarded %}
+        x_forwarded_for_authorized_addrs = {{ l.x_forwarded.for_authorized_addrs | to_json }}
+      {% endif %}
+      {% if 'for_hop_skips' in l.x_forwarded %}
+        x_forwarded_for_hop_skips = {{ l.x_forwarded.for_hop_skips | to_json }}
+      {% endif %}
+      {% if 'for_reject_not_authorized' in l.x_forwarded %}
+        x_forwarded_for_reject_not_authorized = {{ l.x_forwarded.for_reject_not_authorized | to_json }}
+      {% endif %}
+      {% if 'for_reject_not_present' in l.x_forwarded %}
+        x_forwarded_for_reject_not_present = {{ l.x_forwarded.for_reject_not_present | to_json }}
+      {% endif %}
+    {% endif %}
 }
 {% endif %}
 {% endfor %}
@@ -152,48 +250,80 @@ listener "tcp" {
 {% if vault_config_seal is defined %}
 seal {{ vault_config_seal.ty | to_json }} {
 {% if vault_config_seal.ty == 'azurekeyvault' %}
-  {% if 'tenant_id' in vault_config_seal %}tenant_id = {{ vault_config_seal.tenant_id | to_json }}{% endif %}
-  {% if 'client_id' in vault_config_seal %}client_id = {{ vault_config_seal.client_id | to_json }}{% endif %}
-  {% if 'client_secret' in vault_config_seal %}client_secret = {{ vault_config_seal.client_secret | to_json }}{% endif %}
-  {% if 'vault_name' in vault_config_seal %}vault_name = {{ vault_config_seal.vault_name | to_json }}{% endif %}
-  {% if 'key_name' in vault_config_seal %}key_name = {{ vault_config_seal.key_name | to_json }}{% endif %}
+  {% if 'tenant_id' in vault_config_seal %}
+    tenant_id = {{ vault_config_seal.tenant_id | to_json }}
+  {% endif %}
+  {% if 'client_id' in vault_config_seal %}
+    client_id = {{ vault_config_seal.client_id | to_json }}
+  {% endif %}
+  {% if 'client_secret' in vault_config_seal %}
+    client_secret = {{ vault_config_seal.client_secret | to_json }}
+  {% endif %}
+  {% if 'vault_name' in vault_config_seal %}
+    vault_name = {{ vault_config_seal.vault_name | to_json }}
+  {% endif %}
+  {% if 'key_name' in vault_config_seal %}
+    key_name = {{ vault_config_seal.key_name | to_json }}
+  {% endif %}
 {% elif vault_config_seal.ty == 'awskms' %}
-  {% if 'region' in vault_config_seal %}region = {{ vault_config_seal.region | to_json }}{% endif %}
-  {% if 'access_key' in vault_config_seal %}access_key = {{ vault_config_seal.access_key | to_json }}{% endif %}
-  {% if 'session_token' in vault_config_seal %}session_token = {{ vault_config_seal.session_token | to_json }}{% endif %}
-  {% if 'secret_key' in vault_config_seal %}secret_key = {{ vault_config_seal.secret_key | to_json }}{% endif %}
-  {% if 'kms_key_id' in vault_config_seal %}kms_key_id = {{ vault_config_seal.kms_key_id | to_json }}{% endif %}
-  {% if 'endpoint' in vault_config_seal %}endpoint = {{ vault_config_seal.endpoint | to_json }}{% endif %}
+  {% if 'region' in vault_config_seal %}
+    region = {{ vault_config_seal.region | to_json }}
+  {% endif %}
+  {% if 'access_key' in vault_config_seal %}
+    access_key = {{ vault_config_seal.access_key | to_json }}
+  {% endif %}
+  {% if 'session_token' in vault_config_seal %}
+    session_token = {{ vault_config_seal.session_token | to_json }}
+  {% endif %}
+  {% if 'secret_key' in vault_config_seal %}
+    secret_key = {{ vault_config_seal.secret_key | to_json }}
+  {% endif %}
+  {% if 'kms_key_id' in vault_config_seal %}
+    kms_key_id = {{ vault_config_seal.kms_key_id | to_json }}
+  {% endif %}
+  {% if 'endpoint' in vault_config_seal %}
+    endpoint = {{ vault_config_seal.endpoint | to_json }}
+  {% endif %}
 {% elif vault_config_seal.ty == 'gcpckms' %}
-  {% if 'credentials' in vault_config_seal %}credentials = {{ vault_config_seal.credentials | to_json }}{% endif %}
-  {% if 'project' in vault_config_seal %}project = {{ vault_config_seal.project | to_json }}{% endif %}
-  {% if 'region' in vault_config_seal %}region = {{ vault_config_seal.region | to_json }}{% endif %}
-  {% if 'key_ring' in vault_config_seal %}key_ring = {{ vault_config_seal.key_ring | to_json }}{% endif %}
-  {% if 'crypto_key' in vault_config_seal %}crypto_key = {{ vault_config_seal.crypto_key | to_json }}{% endif %}
+  {% if 'credentials' in vault_config_seal %}
+    credentials = {{ vault_config_seal.credentials | to_json }}
+  {% endif %}
+  {% if 'project' in vault_config_seal %}
+    project = {{ vault_config_seal.project | to_json }}
+  {% endif %}
+  {% if 'region' in vault_config_seal %}
+    region = {{ vault_config_seal.region | to_json }}
+  {% endif %}
+  {% if 'key_ring' in vault_config_seal %}
+    key_ring = {{ vault_config_seal.key_ring | to_json }}
+  {% endif %}
+  {% if 'crypto_key' in vault_config_seal %}
+    crypto_key = {{ vault_config_seal.crypto_key | to_json }}
+  {% endif %}
 {% endif %}
 }
 {% endif %}
 
 {% if vault_config_telemetry is defined %}
 telemetry {
-{% if t.ty == "statsite" %}
-  statsite_address = {{ t.address | to_json }}
-{% elif t.ty == "statsd" %}
-  statsd_address = {{ t.address | to_json }}
-{% elif t.ty == "circonus" %}
-  circonus_api_token = {{ t.api_token | to_json }}
-  circonus_api_app = {{ t.api_app | to_json }}
-  circonus_api_url = {{ t.api_url | default("https://api.circonus.com/v2") | to_json }}
-  circonus_submission_interval = {{ t.submission_interval | default("10s") | to_json }}
-  circonus_submission_api = {{ t.submission_api | to_json }}
-  circonus_check_id = {{ t.check_id | to_json }}
-  circonus_check_force_metric_activation = {{ t.check_force_metric_activation | default(False) | to_json}}
-  circonus_check_instance_id = {{ t.check_instance_id | to_json }}
-  circonus_check_search_tag = {{ t.check_search_tag | to_json }}
-  circonus_check_display_name = {{ t.check_display_name | default("") | to_json }}
-  circonus_check_tags = {{ t.check_tags | default("") | to_json }}
-  circonus_broker_id = {{ t.broker_id | to_json }}
-  circonus_broker_select_tag = {{ t.broker_select_tag | to_json }}
-{% endif %}
+  {% if t.ty == "statsite" %}
+    statsite_address = {{ t.address | to_json }}
+  {% elif t.ty == "statsd" %}
+    statsd_address = {{ t.address | to_json }}
+  {% elif t.ty == "circonus" %}
+    circonus_api_token = {{ t.api_token | to_json }}
+    circonus_api_app = {{ t.api_app | to_json }}
+    circonus_api_url = {{ t.api_url | default("https://api.circonus.com/v2") | to_json }}
+    circonus_submission_interval = {{ t.submission_interval | default("10s") | to_json }}
+    circonus_submission_api = {{ t.submission_api | to_json }}
+    circonus_check_id = {{ t.check_id | to_json }}
+    circonus_check_force_metric_activation = {{ t.check_force_metric_activation | default(False) | to_json}}
+    circonus_check_instance_id = {{ t.check_instance_id | to_json }}
+    circonus_check_search_tag = {{ t.check_search_tag | to_json }}
+    circonus_check_display_name = {{ t.check_display_name | default("") | to_json }}
+    circonus_check_tags = {{ t.check_tags | default("") | to_json }}
+    circonus_broker_id = {{ t.broker_id | to_json }}
+    circonus_broker_select_tag = {{ t.broker_select_tag | to_json }}
+  {% endif %}
 }
 {% endif %}

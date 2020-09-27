@@ -30,22 +30,22 @@
   become_user: root
   with_items:
     - d: '{{ vault_config_dir }}'
-      m: '0700'
     - d: '{{ vault_config_pki_dir }}'
-      m: '0700'
   file:
     path: '{{ item.d }}'
     state: directory
     owner: '{{ vault_user }}'
     group: '{{ vault_group }}'
-    mode: '{{ item.m }}'
+    mode: '{{ item.m | default("0700") }}'
 
 - name: install keys/certs
-  when: vault_config_tls | default(False)
+  when: vault_config_tls is defined
   include_role:
     name: andrewrothstein.tls
   vars:
-    tls_src: '{{ vault_config_tls_src }}'
+    tls_become: yes
+    tls_become_user: root
+    tls_src: '{{ vault_config_tls.pki_dir }}'
     tls_dest: '{{ vault_config_pki_dir }}'
     tls_dest_chown:
       owner: '{{ vault_user }}'
