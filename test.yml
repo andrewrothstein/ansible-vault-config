@@ -2,6 +2,7 @@
 - hosts: all
   roles:
     - role: '{{ playbook_dir }}'
+      vault_activate: False
       vault_config_tls:
         enable: True
         pki_dir: test-pki
