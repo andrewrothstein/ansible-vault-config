@@ -7,9 +7,6 @@ galaxy_info:
     - MIT
   min_ansible_version: 2.0
   platforms:
-    - name: Alpine
-      versions:
-        - all
     - name: Archlinux
       versions:
         - all
@@ -35,6 +32,6 @@ galaxy_info:
 
 dependencies:
   - role: andrewrothstein.tls
-    version: v0.0.1
+    version: v0.0.2
   - role: andrewrothstein.vault
-    version: v2.0.2
+    version: v2.0.3

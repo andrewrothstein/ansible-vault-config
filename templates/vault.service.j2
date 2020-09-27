@@ -1,0 +1,15 @@
+[Unit]
+Description=Vault Server
+After=network-online.target
+Requires=network-online.target
+
+[Service]
+User={{ vault_user }}
+Group={{ vault_group }}
+ExecStart=/usr/local/bin/vault server -config={{ vault_config_dir }}/config.hcl
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=INT
+LimitMEMLOCK=infinity
+
+[Install]
+WantedBy=multi-user.target

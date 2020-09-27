@@ -1,4 +1,5 @@
 ---
+vault_activate: True
 vault_user: vault
 vault_group: vault
 

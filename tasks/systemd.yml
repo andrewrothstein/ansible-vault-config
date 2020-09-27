@@ -1,0 +1,18 @@
+---
+- name: install systemd service
+  become: yes
+  become_user: root
+  with_items:
+    - f: vault.service
+      d: /etc/systemd/system
+  template:
+    src: '{{ item.f }}.j2'
+    dest: '{{ item.d }}/{{ item.f }}'
+    mode: 0644
+  register: vault_systemd_service_modified
+- name: systemctl daemon-reload
+  become: yes
+  become_user: root
+  when: vault_activate and vault_systemd_service_modified.changed
+  systemd:
+    daemon_reload: yes

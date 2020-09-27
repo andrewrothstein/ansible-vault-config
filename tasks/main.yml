@@ -64,3 +64,15 @@
     owner: '{{ vault_user }}'
     group: '{{ vault_group }}'
     mode: '{{ item.m }}'
+  register: vault_config_modified
+
+- include: '{{ vault_init | default("systemd") }}.yml'
+
+- name: launch vault service
+  become: yes
+  become_user: root
+  when: vault_activate
+  service:
+    name: vault
+    enabled: true
+    state: '{% if vault_config_modified.changed %}restarted{% else %}started{% endif %}'

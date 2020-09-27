@@ -5,3 +5,7 @@
       vault_config_tls:
         enable: True
         pki_dir: test-pki
+      vault_config_listeners:
+        - ty: tcp
+          address: 0.0.0.0:8200
+          cluster_address: 0.0.0.0:8201

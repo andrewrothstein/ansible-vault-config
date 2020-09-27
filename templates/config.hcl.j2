@@ -198,36 +198,41 @@ listener "tcp" {
     {% if 'proxy_protocol_authorized_addrs' in l %}
       proxy_protocol_authorized_addrs = {{ l.proxy_protocol_authorized_addrs | to_json }}
     {% endif %}
-    {% if 'pki' in l %}
-      {% if 'cert_file' in l.pki %}
-        tls_cert_file = {{ l.pki.cert_file | to_json }}
+    {% if vault_config_tls is defined and 'enable' in vault_config_tls and vault_config_tls.enable %}
+      tls_disable = "false"
+      tls_cert_file = "{{ vault_config_pki_dir }}/cert.pem"
+      tls_key_file = "{{ vault_config_pki_dir }}/key.pem"
+      tls_client_ca_file = "{{ vault_config_pki_dir }}/ca.pem"
+    {% elif 'pki' in l %}
+      {% if 'tls_disable' in l.pki and l.pki.tls_disable %}
+        tls_disable = "true"
+      {% else %}
+        tls_disable = "false"
+        {% if 'cert_file' in l.pki %}
+          tls_cert_file = {{ l.pki.cert_file | to_json }}
+        {% endif %}
+        {% if 'key_file' in l.pki %}
+          tls_key_file = {{ l.pki.key_file | to_json }}
+        {% endif %}
+        {% if 'client_ca_file' in l.pki %}
+          tls_client_ca_file = {{ l.pki.client_ca_file | to_json }}
+        {% endif %}
+        {% if 'min_version' in l.pki %}
+          tls_min_version = {{ l.pki.min_version | to_json }}
+        {% endif %}
+        {% if 'cipher_suites' in l.pki %}
+          tls_cipher_suites = {{ l.pki.cipher_suites | to_json }}
+        {% endif %}
+        {% if 'prefer_server_cipher_suites' in l.pki %}
+          tls_prefer_server_cipher_suites = {{ l.pki.prefer_server_cipher_suites | to_json }}
+        {% endif %}
+        {% if 'require_and_verify_client_cert' in l.pki %}
+          tls_require_and_verify_client_cert = {{ l.pki.require_and_verify_client_cert | to_json }}
+        {% endif %}
+        {% if 'disable_client_certs' in l.pki %}
+          tls_disable_client_certs = {{ l.pki.disable_client_certs | to_json }}
+        {% endif %}
       {% endif %}
-      {% if 'key_file' in l.pki %}
-        tls_key_file = {{ l.pki.key_file | to_json }}
-      {% endif %}
-      {% if 'min_version' in l.pki %}
-        tls_min_version = {{ l.pki.min_version | to_json }}
-      {% endif %}
-      {% if 'cipher_suites' in l.pki %}
-        tls_cipher_suites = {{ l.pki.cipher_suites | to_json }}
-      {% endif %}
-      {% if 'prefer_server_cipher_suites' in l.pki %}
-        tls_prefer_server_cipher_suites = {{ l.pki.prefer_server_cipher_suites | to_json }}
-      {% endif %}
-      {% if 'require_and_verify_client_cert' in l.pki %}
-        tls_require_and_verify_client_cert = {{ l.pki.require_and_verify_client_cert | to_json }}
-      {% endif %}
-      {% if 'client_ca_file' in l.pki %}
-        tls_client_ca_file = {{ l.pki.client_ca_file | to_json }}
-      {% endif %}
-      {% if 'disable_client_certs' in l.pki %}
-        tls_disable_client_certs = {{ l.pki.disable_client_certs | to_json }}
-      {% endif %}
-    {% elif vault_config_tls is defined %}
-      cert_file = "{{ vault_config_pki_dir }}/cert.pem"
-      key_file = "{{ vault_config_pki_dir }}/key.pem"
-    {% else %}
-      tls_disable = "true"
     {% endif %}
     {% if 'x_forwarded' in l %}
       {% if 'for_authorized_addrs' in l.x_forwarded %}
