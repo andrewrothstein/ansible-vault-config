@@ -34,4 +34,4 @@ dependencies:
   - role: andrewrothstein.tls
     version: v0.0.2
   - role: andrewrothstein.vault
-    version: v2.0.3
+    version: v2.1.0
